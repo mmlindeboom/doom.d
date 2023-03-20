@@ -1,14 +1,28 @@
+#+title: Doom Emacs Config
+#+property: header-args :tangle config.el
+
+* Who Am I
+#+BEGIN_SRC emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 (setq user-full-name "Matt Lindeboom"
       user-mail-address "matt@b0om.net")
+#+END_SRC
+ :
+#+RESULTS:
+: matt@b0om.net
 
+* Theme
+#+BEGIN_SRC emacs-lisp
 (setq doom-font (font-spec :family "Dank Mono" :size 16)
       doom-variable-pitch-font (font-spec :family "Vollkorn" :size 18)
       doom-serif-font (font-spec :family "Granjon")
       doom-theme 'doom-gruvbox
       display-line-numbers-type t
       )
+#+END_SRC
 
+* Visuals
+#+BEGIN_SRC emacs-lisp
 ;;; Dashboard Customization
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-functions :append)
@@ -25,6 +39,10 @@
 (set-face-foreground face (face-attribute 'default :background)))
 (set-face-background 'fringe (face-attribute 'default :background))
 
+#+END_SRC
+
+* Org Mode
+#+BEGIN_SRC emacs-lisp
 ;;; ORG MODE
 (setq org-directory "~/org/")
 ;; Set default, fixed and variabel pitch fonts
@@ -90,20 +108,37 @@
           (text-scale-decrease 2))))
     :bind
     (("<f9>" . distraction-free)))
+#+END_SRC
 
+* Perspective
+The Perspective package provides multiple named workspaces (or "perspectives") in Emacs, similar to multiple desktops in window managers like Awesome and XMonad.  Each perspective has its own buffer list and its own window layout. This makes it easy to work on many separate projects without getting lost in all the buffers. Switching to a perspective activates its window configuration, and when in a perspective, only its buffers are available.
+#+begin_src emacs-lisp
 (use-package perspective
   :bind
   ("C-x C-b" . persp-list-buffers)   ; or use a nicer switcher, see below
   :config
   (persp-mode))
+#+end_src
 
+* Projectile
+#+begin_src emacs-lisp
 (use-package projectile
   :config
   (projectile-global-mode 1))
+#+end_src
 
+* VTerm
+#+begin_src emacs-lisp
 (setq shell-file-name "/usr/local/bin/fish"
       vterm-max-scrollback 5000)
+#+end_src
 
+* Which-key
+Which-key is a minor mode for Emacs that displays the key bindings following your currently entered incomplete command (a prefix) in a popup.
+
+=NOTE:= Which-key has an annoying bug that in some fonts and font sizes, the bottom row in which key gets covered up by the modeline.
+
+#+begin_src emacs-lisp
 (use-package which-key
   :init
   (setq which-key-side-window-location 'bottom
@@ -119,3 +154,4 @@
         which-key-allow-imprecise-window-fit t
         which-key-separator " → " ))
 (which-key-mode)
+#+end_src
