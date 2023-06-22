@@ -4,12 +4,13 @@
 
 (setq doom-font (font-spec :family "Dank Mono" :size 16)
       doom-variable-pitch-font (font-spec :family "Vollkorn" :size 18)
-      doom-serif-font (font-spec :family "Granjon")
+      doom-serif-font (font-spec :family "Vollkorn")
       doom-theme 'doom-gruvbox
       display-line-numbers-type t
       )
 
 ;;; Dashboard Customization
+(when window-system
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 (add-hook! '+doom-dashboard-functions :append)
 (setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
@@ -23,12 +24,13 @@
                 window-divider-last-pixel))
 (face-spec-reset-face face)
 (set-face-foreground face (face-attribute 'default :background)))
-(set-face-background 'fringe (face-attribute 'default :background))
+(set-face-background 'fringe (face-attribute 'default :background)))
 
 ;;; ORG MODE
 (setq org-directory "~/org/")
 ;; Set default, fixed and variabel pitch fonts
 ;; Use M-x menu-set-font to view available fonts
+(when window-system
 (let* ((variable-tuple
           (cond ((x-list-fonts "Rokkitt") '(:font "Rokkitt"))
                 ((x-list-fonts "Sono Monospace") '(:font "Sono Monospace"))
@@ -49,7 +51,7 @@
      `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
      `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
      `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.675))))
-     `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
+     `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil)))))))
 (use-package mixed-pitch
     :hook
     (text-mode . mixed-pitch-mode)
@@ -60,7 +62,7 @@
 (add-hook 'mixed-pitch-mode-hook #'solaire-mode-reset)
 
 ;; Improve org mode looks
-    (setq org-startup-indented t
+(setq org-startup-indented t
           org-pretty-entities t
           org-hide-emphasis-markers t
           org-startup-with-inline-images t
@@ -104,7 +106,7 @@
 (setq shell-file-name "/usr/local/bin/fish"
       vterm-max-scrollback 5000)
 
-(use-package which-key
+  (use-package which-key
   :init
   (setq which-key-side-window-location 'bottom
         which-key-sort-order #'which-key-key-order-alpha
@@ -119,3 +121,19 @@
         which-key-allow-imprecise-window-fit t
         which-key-separator " → " ))
 (which-key-mode)
+
+(set-language-environment "UTF-8")
+(after! python
+  (setq python-indent-offset 4))
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq indent-line-function 'insert-tab)
+(smart-tabs-insinuate 'python 'javascript)
+
+(require 'py-isort)
+(add-hook 'before-save-hook 'py-isort-before-save)
+
+(use-package python-black
+  :demand t
+  :after python
+  :hook (python-mode . python-black-on-save-mode-enable-dwim))
